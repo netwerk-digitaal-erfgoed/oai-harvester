@@ -1,0 +1,39 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+
+CONSTRUCT {
+
+  # create the normalized triples for all the spatial data
+  # these can be added to the main data
+  ?uri schema:contentLocation [
+    a schema:Place ;
+    schema:name ?spatial ;
+    schema:sameAs ?uri_spatial 
+  ] .
+}
+
+WHERE {
+
+  # walk through the unique spatials field 
+  # collected earlier by running extractDistinctValues.sh
+  ?s ex:edm_providedCHO_uri ?uriStr .
+  BIND( URI( ?uriStr) as ?uri)
+
+  # collect all the spatial values
+  ?s ex:edm_providedCHO_spatial ?spatial
+
+  # ignore the values that have numbers in them 
+  FILTER(!REGEX(?spatial,'[0-9]'))
+
+  # matching should be done in lowercase 
+  BIND( LCASE(?spatial) as ?location )
+
+  # use the normalized locations generated earlier
+  # to add the GeoNames URI to the data
+  OPTIONAL {
+    ?uri_spatial schema:name ?location
+  }
+
+}

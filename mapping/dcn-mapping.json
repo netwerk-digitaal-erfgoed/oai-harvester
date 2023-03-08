@@ -1,0 +1,34 @@
+{
+    "header":{
+        "identifier":"header_identifier",
+        "datestamp":"header_datestamp",
+        "setSpec":"header_setspec"
+    },
+    "metadata":{
+        "rdf:RDF":{
+            "$":"metadata_prefixes",
+            "ore:Aggregation":{
+                "$":{ "rdf:about":"ore_aggregation_uri" },
+                "edm:isShownAt":{ "$":{ "rdf:resource":"ore_aggregation_isShownAtUrl" } },
+                "edm:provider":"ore_aggregation_provider",
+                "edm:aggregatedCHO":{ "$":{ "rdf:resource":"ore_aggregation_aggregatedCHO_uri" } },
+                "edm:object":{ "$":{ "rdf:resource":"ore_aggregation_object_uri" } },
+                "edm:dataProvider":"ore_aggregation_dataProvider",
+                "edm:isShownBy":{ "$":{ "rdf:resource":"ore_aggregation_isShownBy_uri" } },
+                "edm:rights":{ "$":{ "rdf:resource":"ore_aggregation_rights" } }
+            },
+            "edm:ProvidedCHO":{ 
+                "$":{ "rdf:about":"edm_providedCHO_uri" },
+                "dc:description":"edm_providedCHO_description",
+                "dc:creator":"edm_providedCHO_creator",
+                "dcterms:spatial":"edm_providedCHO_spatial",
+                "edm:isRepresentationOf": { "$":{ "rdf:resource":"edm_providedCHO_isRepresentationOf" } },
+                "dc:identifier":"edm_providedCHO_identifier",
+                "dcterms:created":"edm_providedCHO_created",
+                "dc:rights":"edm_providedCHO_rights",
+                "dc:date":"edm_providedCHO_date",
+                "dc:subject": "edm_providedCHO_subject"
+            }
+        }
+    }
+}

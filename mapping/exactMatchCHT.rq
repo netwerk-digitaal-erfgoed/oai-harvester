@@ -1,0 +1,41 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+CONSTRUCT {
+  ?uri schema:name ?subject 
+}
+WHERE {
+  select ?subject ?uri {
+    # call the NDE Geonames Sparql endpoint
+    { 
+      SERVICE <https://data.cultureelerfgoed.nl/PoolParty/sparql/term/id/cht>  {
+
+        # collect a distinct list of possible names 
+        # count the number of available URI for this name and store a random URI out of the result set
+        SELECT DISTINCT ?subject (COUNT(?uri_subject) as ?hits) (SAMPLE(?uri_subject) as ?uri)  {
+  
+          # find the geonames URI that matches this spatial string
+          ?uri_subject ?predicate ?label .
+          
+          # select names from the prefLabel and altLabel property
+          VALUES ?predicate { skos:prefLabel skos:altLabel }
+
+          # the matching will be done in all lowercase char
+          BIND(LCASE(STR(?label)) as ?subject)
+          
+          # group results on the name necessary for COUNT and SAMPLE functions
+        } GROUP BY ?subject ORDER BY ?subject 
+      }
+    }
+    # join the results with the distinct values list
+    # NOTE: the matching is done on lower case names for both lists
+    ?s schema:name ?subject
+
+    # only allow exact matches to prevent noise
+    # multiple candidates should be handled manualy
+    FILTER (?hits = 1)
+
+  } ORDER BY ?subject
+}

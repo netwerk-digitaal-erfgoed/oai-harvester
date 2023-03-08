@@ -1,0 +1,73 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX edmfp:<http://www.europeanafashion.eu/edmfp/>
+
+CONSTRUCT {
+  ?uri rdf:type schema:CreativeWork ;
+    schema:description 	?description ;
+    schema:temporal ?temporal ;
+    schema:dateCreated ?year ;
+    schema:mainEntityOfPage ?isShownAt ;
+    schema:image ?image_uri ;
+    schema:creator ?person_uri ;
+    schema:publisher ?publisher ; 
+    schema:isBasedOn 	?identifier .
+
+  ?image_uri rdf:type schema:ImageObject ;
+    schema:contentUrl ?isShownBy ;
+    schema:license ?rights .
+
+  ?person_uri rdf:type schema:Person ;
+      schema:name ?creator .
+}
+WHERE {
+  ?s ex:edm_providedCHO_uri ?uriStr .
+
+  BIND( URI( ?uriStr) as ?uri)
+  BIND( BNODE() as ?image_uri )
+  BIND( BNODE() as ?person_uri )
+  OPTIONAL { ?s ex:edm_providedCHO_description ?description }
+  OPTIONAL { ?s ex:edm_providedCHO_created ?created }
+  OPTIONAL { ?s ex:edm_providedCHO_date ?date }
+  OPTIONAL { ?s ex:edm_providedCHO_creator ?creator }
+
+  # check if this is doing the right thing!
+  # extract the date and year value from dc:created or dc:date 
+  BIND( IF( BOUND(?created),?created, IF( BOUND( ?date ),?date,BNODE() ) ) as ?temporal )
+  FILTER( !ISBLANK( ?temporal ) )
+  BIND( SUBSTR( ?temporal, 1,4 ) as ?year )
+
+  # select the URL of the image, ignore other values
+  OPTIONAL { 
+    ?s ex:ore_aggregation_isShownAtUrl ?isShownAtStr
+    BIND( IF(CONTAINS(?isShownAtStr,"http://"), URI(?isShownAtStr),BNODE() ) AS ?isShownAt )
+    FILTER( !ISBLANK( ?isShownAt ) )  
+  }
+
+  # select the URL of the page where the image is displayed, ignore other values
+  OPTIONAL { 
+    ?s ex:ore_aggregation_isShownBy_uri ?isShownByStr 
+    BIND( IF(CONTAINS(?isShownByStr,"http"), URI(?isShownByStr),BNODE() ) AS ?isShownBy )
+    FILTER( !ISBLANK( ?isShownBy ) )  
+  }
+
+  # select the formal rights statement, ignore the other values
+  OPTIONAL { 
+    ?s ex:ore_aggregation_rights ?rightStr 
+    BIND( IF(CONTAINS(?rightStr,"http://"), URI(?rightStr),BNODE() ) AS ?rights )
+    FILTER( !ISBLANK( ?rights ) )  
+  }
+
+  # pick up the OAI identifier
+  OPTIONAL { 
+    ?s ex:edm_providedCHO_identifier ?identifier_raw
+    BIND( IF(CONTAINS(?identifier_raw,"dcn_rce-beeldbank"), ?identifier_raw, BNODE() ) AS ?identifier )
+    FILTER( !ISBLANK( ?identifier ) )  
+  }
+
+  # fixed value for publisher
+  BIND( URI("https://www.cultureelerfgoed.nl") as ?publisher )
+}

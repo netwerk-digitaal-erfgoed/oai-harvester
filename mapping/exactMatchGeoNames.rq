@@ -1,0 +1,49 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+PREFIX gn: <https://www.geonames.org/ontology#>
+
+CONSTRUCT {
+  ?uri schema:name ?spatial 
+}
+WHERE {
+  select ?spatial ?uri {
+    # call the NDE Geonames Sparql endpoint
+    { 
+      SERVICE <https://demo.netwerkdigitaalerfgoed.nl/geonames/sparql>  {
+
+        # collect a distinct list of possible names 
+        # count the number of available URI for this name and store a random URI out of the result set
+        SELECT DISTINCT ?spatial (COUNT(?uri_spatial) as ?hits) (SAMPLE(?uri_spatial) as ?uri)  {
+  
+          # find the geonames URI that matches this spatial string
+          ?uri_spatial ?predicate ?label ;
+              gn:countryCode ?countryCode .
+          
+          # select names from the name and alternateName property
+          VALUES ?predicate { gn:name gn:alternateName }
+
+          # the matching will be done in all lowercase char
+          BIND(LCASE(STR(?label)) as ?spatial)
+          
+          # limit results to populated places surfaces
+          ?uri_spatial gn:featureClass ?featureClass .
+          VALUES ?featureClass { gn:P }
+
+          # limit result to NL only to limit the double results
+          VALUES ?countryCode { "NL" }
+
+          # group results on the name necessary for COUNT and SAMPLE functions
+        } GROUP BY ?spatial ORDER BY ?spatial 
+      }
+    }
+    # join the results with the distinct values list
+    # NOTE: the matching is done on lower case names for both lists
+    ?s schema:name ?spatial
+
+    # only perform exact matches to prevent noise
+    # multiple candidates should be handled manualy
+    FILTER (?hits = 1)
+
+  } ORDER BY ?spatial
+}
