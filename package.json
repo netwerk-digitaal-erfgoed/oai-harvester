@@ -1,1 +1,17 @@
-{"name":"oai-harvester","version":"1.0.0","description":"","main":"harvest.js","scripts":{"test":"echo \"Error: no test specified\" && exit 1"},"author":"","license":"ISC","dependencies":{"fs-ndjson":"^1.1.0","oai-pmh":"^2.0.3","oai-pmh2":"^2.1.2","traverse":"^0.6.7"}}
+{
+    "name": "oai-harvester",
+    "version": "1.0.0",
+    "description": "",
+    "main": "harvest.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "harvester": "node src/harvester.js"
+    },
+    "author": "Enno Meijers",
+    "license": "EUPL",
+    "dependencies": {
+        "oai-pmh2": "^2.1.2",
+        "traverse": "^0.6.7",
+        "yargs": "^17.7.1"
+    }
+}

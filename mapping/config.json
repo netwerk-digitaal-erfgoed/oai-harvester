@@ -4,7 +4,8 @@
          "oaiUrl": "https://www.collectienederland.nl/api/oai-pmh",
          "oaiOptions": {
             "metadataPrefix": "edm-strict",
-            "set":"rce-beeldbank"
+            "set":"rce-beeldbank",
+            "from": "2023-02-01"
          },
          "defaultPrefix": "http://example.org/",
          "mappingFile": "./mapping/dcn-mapping.json",

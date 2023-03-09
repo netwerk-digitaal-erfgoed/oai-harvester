@@ -1,11 +1,28 @@
 const traverse = require('traverse');
 const fs = require('fs');
 const { OaiPmh } = require('oai-pmh2');
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv)).argv
 
-const configfile = JSON.parse( fs.readFileSync('./mapping/config.json') );
+let config = {}
+if (!argv.dataset) {
+  console.log("Please specify one of the datasets defined in './mapping/config.json using --dataset=<dataset name>") ;
+  return
+} else {
+  const dataset = argv.dataset ;
+  const configfile = JSON.parse( fs.readFileSync('./mapping/config.json') );
+  for(index in configfile) {
+    if(configfile[index][dataset]) {
+      config = configfile[index][dataset] ;
+    }
+  }
+  if( config == {} ) {
+    console.log("No valid dataset definition found!") ;
+    return ;
+  }
+}
 
-// this should be handled by passing arguments or some similar
-const config = configfile[0].RCEbeeldbank ;
 const mapping = JSON.parse( fs.readFileSync( config.mappingFile ) );
 
 function cleanUp(rawValue){
