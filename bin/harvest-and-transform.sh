@@ -29,13 +29,13 @@ then
   exit
 fi
 
-
 # define some intermediate file names
 BASEFILE="./data/$DATASET-base.nt"
 RECONFILE1="./data/$DATASET-contentLocation.nt"
 RECONFILE2="./data/$DATASET-about.nt"
 
 # perform the generic transformation without reconciled properties
+echo "Perform a basic mapping of the raw RDF data."
 sparql -q --results N-Triples\
  --data $SOURCEFILE\
  --query ./mappings/toSchema.rq > $BASEFILE

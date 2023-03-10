@@ -7,7 +7,7 @@ const argv = yargs(hideBin(process.argv)).argv
 
 let config = {}
 if (!argv.dataset) {
-  console.log("Please specify one of the datasets defined in './mapping/config.json using --dataset=<dataset name>") ;
+  console.log("Please specify one of the datasets defined in './mappings/config.json using --dataset=<dataset name>") ;
   return
 } else {
   const dataset = argv.dataset ;
