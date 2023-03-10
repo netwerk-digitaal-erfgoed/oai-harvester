@@ -11,7 +11,7 @@ if (!argv.dataset) {
   return
 } else {
   const dataset = argv.dataset ;
-  const configfile = JSON.parse( fs.readFileSync('./mapping/config.json') );
+  const configfile = JSON.parse( fs.readFileSync('./mappings/config.json') );
   for(index in configfile) {
     if(configfile[index][dataset]) {
       config = configfile[index][dataset] ;

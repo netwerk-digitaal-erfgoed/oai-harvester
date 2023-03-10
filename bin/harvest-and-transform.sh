@@ -1,14 +1,44 @@
 #! /bin/bash
-SOURCEFILE="./data/rce-beeldbank-raw.nt"
-BASEFILE="./data/rce-beeldbank-base.nt"
-RECONFILE1="./data/recon-contentLocation.nt"
-RECONFILE2="./data/recon-about.nt"
-DESTFILE="./data/rce-beeldbank.nt" 
+
+# this script expects the dataset name as argument
+DATASET=$1
+if [ -z $1 ]
+then
+  echo "Error: a dataset name must be specified"
+  exit
+fi 
+
+DATASETOBJ=`jq  ".[].$DATASET" ./mappings/config.json`
+if [ "$DATASETOBJ" == null ]
+then
+  echo "Error: Dataset definition not found in config.json"
+  exit
+fi
+
+# harvest the dataset as configured in ./mappings/config.json
+npm run harvester -- --dataset=$DATASET
+
+# the source and destination file names are read from ./mappings/config.json
+SOURCEFILE=`jq  ".[].$DATASET.outputFile" ./mappings/config.json`
+DESTFILE=`jq  ".[].$DATASET.resultFile" ./mappings/config.json`
+SOURCEFILE=$(eval echo $SOURCEFILE)
+DESTFILE=$(eval echo $DESTFILE) 
+if [[ "$SOURCEFILE" == null ||  "$DESTFILE" == null ]]
+then
+  echo "Error: 'outputFile' or 'resultFile' not set in config.json"
+  exit
+fi
+
+
+# define some intermediate file names
+BASEFILE="./data/$DATASET-base.nt"
+RECONFILE1="./data/$DATASET-contentLocation.nt"
+RECONFILE2="./data/$DATASET-about.nt"
 
 # perform the generic transformation without reconciled properties
 sparql -q --results N-Triples\
  --data $SOURCEFILE\
- --query ./mapping/toSchema.rq > $BASEFILE
+ --query ./mappings/toSchema.rq > $BASEFILE
 
 # function for creating exact matches with reference sources
 createExactMatches () {
@@ -49,8 +79,8 @@ createExactMatches () {
 # define vars for matching the 'spatial' field
 SRCPROPERTY="<http://example.org/edm_providedCHO_spatial>"
 TARGETFIELD="spatial"
-MATCHQUERY="./mapping/exactMatchGeoNames.rq"
-GENQUERY="./mapping/genContentLocation.rq"
+MATCHQUERY="./mappings/exactMatchGeoNames.rq"
+GENQUERY="./mappings/genContentLocation.rq"
 RECONFILE=$RECONFILE1
 # generate the additional triples using the variable defined above
 createExactMatches
@@ -58,8 +88,8 @@ createExactMatches
 # define vars for matching the 'subject' field
 SRCPROPERTY="<http://example.org/edm_providedCHO_subject>"
 TARGETFIELD="subject"
-MATCHQUERY="./mapping/exactMatchCHT.rq"
-GENQUERY="./mapping/genAbout.rq"
+MATCHQUERY="./mappings/exactMatchCHT.rq"
+GENQUERY="./mappings/genAbout.rq"
 RECONFILE=$RECONFILE2
 # generate the additional triples using the variable defined above
 createExactMatches  

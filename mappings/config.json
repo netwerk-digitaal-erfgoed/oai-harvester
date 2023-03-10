@@ -4,12 +4,12 @@
          "oaiUrl": "https://www.collectienederland.nl/api/oai-pmh",
          "oaiOptions": {
             "metadataPrefix": "edm-strict",
-            "set":"rce-beeldbank",
-            "from": "2023-02-01"
+            "set":"rce-beeldbank"
          },
          "defaultPrefix": "http://example.org/",
-         "mappingFile": "./mapping/dcn-mapping.json",
-         "outputFile": "./data/rce-beeldbank-raw.nt"
+         "mappingFile": "./mappings/dcn-mapping.json",
+         "outputFile": "./data/rce-beeldbank-raw.nt",
+         "resultFile": "./data/rce-beeldbank.nt"
       }
     }
 ]

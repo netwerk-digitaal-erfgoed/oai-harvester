@@ -1,0 +1,7 @@
+version: "3.3" 
+services:
+  mapper:
+    build: .
+    volumes:
+      - ./data:/app/data
+    command: bin/harvest-and-transform.sh RCEbeeldbank
