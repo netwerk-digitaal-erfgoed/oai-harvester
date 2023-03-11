@@ -13,8 +13,6 @@ RUN mkdir bin
 RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o ./bin/jq
 RUN chmod 755 bin/jq
 COPY bin/* bin/
-COPY mappings/ mappings/
-COPY data/ data/
 COPY src/ src/
 COPY ./package.json .
 RUN npm install

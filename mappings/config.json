@@ -4,12 +4,28 @@
          "oaiUrl": "https://www.collectienederland.nl/api/oai-pmh",
          "oaiOptions": {
             "metadataPrefix": "edm-strict",
-            "set":"rce-beeldbank"
+            "set":"rce-beeldbank",
+            "from": "2023-02-01"
          },
          "defaultPrefix": "http://example.org/",
          "mappingFile": "./mappings/dcn-mapping.json",
+         "mappingQuery": "./mappings/toSchema.rq",
          "outputFile": "./data/rce-beeldbank-raw.nt",
-         "resultFile": "./data/rce-beeldbank.nt"
+         "resultFile": "./data/rce-beeldbank.nt",
+         "refinements":[
+            {
+              "srcproperty":"<http://example.org/edm_providedCHO_spatial>",
+              "targetfield":"spatial",
+              "matchQuery": "./mappings/exactMatchGeoNames.rq",
+              "genQuery": "./mappings/genContentLocation.rq"
+            },
+            {
+               "srcproperty": "<http://example.org/edm_providedCHO_subject>",
+               "targetfield": "subject",
+               "matchQuery": "./mappings/exactMatchCHT.rq",
+               "genQuery": "./mappings/genAbout.rq"
+            }
+         ]
       }
     }
 ]

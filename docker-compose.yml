@@ -4,4 +4,8 @@ services:
     build: .
     volumes:
       - ./data:/app/data
-    command: bin/harvest-and-transform.sh RCEbeeldbank
+      - ./mappings:/app/mappings
+    environment:
+      DATASET: RCEbeeldbank
+      CONFIG: ./mappings/config.json
+    command: bin/harvest-and-transform.sh
