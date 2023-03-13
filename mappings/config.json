@@ -8,8 +8,8 @@
             "from": "2023-02-01"
          },
          "defaultPrefix": "http://example.org/",
-         "mappingFile": "./mappings/dcn-mapping.json",
-         "mappingQuery": "./mappings/toSchema.rq",
+         "mappingFile": "./mappings/DCNMapping.json",
+         "mappingQuery": "./mappings/DCNtoSchema.rq",
          "outputFile": "./data/rce-beeldbank-raw.nt",
          "resultFile": "./data/rce-beeldbank.nt",
          "refinements":[
@@ -26,6 +26,20 @@
                "genQuery": "./mappings/genAbout.rq"
             }
          ]
+      }
+    },
+    {
+      "ArchiefEemlandBeeldbank": {
+         "oaiUrl":"https://maior.memorix.nl/api/oai/gam/key/c0e7adea-90d2-42da-a8e9-6002447991b1",
+         "oaiOptions": {
+            "metadataPrefix": "ese",
+            "set": "tenant:gam"
+         },
+         "defaultPrefix": "http://example.org/",
+         "mappingFile": "./mappings/ArchiefEemlandMapping.json",
+         "mappingQuery": "./mappings/ArchiefEemlandtoSchema.rq",
+         "outputFile": "./data/archiefeemland-raw.nt",
+         "resultFile": "./data/archiefeemland.nt"
       }
     }
 ]

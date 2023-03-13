@@ -1,20 +1,20 @@
 const traverse = require('traverse');
 const fs = require('fs');
 const { OaiPmh } = require('oai-pmh2');
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
-const argv = yargs(hideBin(process.argv)).argv
 
+const DATASET=process.env.DATASET
+const CONFIG=process.env.CONFIG
 let config = {}
-if (!argv.dataset) {
-  console.log("Please specify one of the datasets defined in './mappings/config.json using --dataset=<dataset name>") ;
+if (!DATASET || !CONFIG) {
+  console.log("Please set environment vars DATASET and CONFIG") ;
   return
 } else {
-  const dataset = argv.dataset ;
-  const configfile = JSON.parse( fs.readFileSync('./mappings/config.json') );
+  console.log(`Config used: ${CONFIG}`) ;
+  console.log(`Dataset used: ${DATASET}`) ;
+  const configfile = JSON.parse( fs.readFileSync(process.env.CONFIG) );
   for(index in configfile) {
-    if(configfile[index][dataset]) {
-      config = configfile[index][dataset] ;
+    if(configfile[index][DATASET]) {
+      config = configfile[index][DATASET] ;
     }
   }
   if( config == {} ) {
@@ -25,11 +25,14 @@ if (!argv.dataset) {
 
 const mapping = JSON.parse( fs.readFileSync( config.mappingFile ) );
 
-function cleanUp(rawValue){
+function cleanUp(rawValue,isURI=false){
   let strVal = rawValue.toString();
   strVal = strVal.replace(/\\/g,'');  // remove all backslahes 
   strVal = strVal.replace(/"/g,"'");  // replace all dubble quotes with single quotes
   strVal = strVal.replace(/(\r\n|\n|\r)/gm,''); // remove newlines
+  if(isURI){
+    strVal = strVal.replace(/:/g,"_");  // replace colon with underscore in URIs
+  }
   return strVal;
 }
 
@@ -53,8 +56,8 @@ function createNtriples ( record ) {
 
     // the OAI-PMH record will always contain the identifier
     // and set specification in the header section
-    const identifier = obj.header.identifier ;
-    const set = obj.header.setSpec ;
+    const identifier = cleanUp(obj.header.identifier,true) ;
+    const set = cleanUp(obj.header.setSpec,true) ;
     const uri = `<${config.defaultPrefix}${set}/${identifier}>` ;
 
     // find field strings in the mapping object

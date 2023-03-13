@@ -1,0 +1,17 @@
+{
+    "header":{
+        "identifier":"header_identifier",
+        "datestamp":"header_datestamp",
+        "setSpec":"header_setspec"
+    },
+    "metadata":{
+        "europeana:record":{
+            "$":"metadata_prefixes",
+            "dc:title": "ese_title",
+            "dc:description": "ese_description",
+            "dc:subject": "ese_subject",
+            "dcterms:references": "ese_references",
+            "europeana:isShownBy": "ese_isShownBy"
+        }
+    }
+}

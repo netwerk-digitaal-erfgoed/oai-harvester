@@ -1,0 +1,49 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX edmfp:<http://www.europeanafashion.eu/edmfp/>
+
+CONSTRUCT {
+  ?uri rdf:type schema:CreativeWork ;
+    schema:description 	?description ;
+    schema:about ?subject ;
+    schema:mainEntityOfPage ?isShownAt ;
+    schema:image ?image_uri ;
+    schema:isBasedOn 	?identifier ;
+    schema:publisher ?publisher .
+
+  ?image_uri rdf:type schema:ImageObject ;
+    schema:contentUrl ?isShownBy .
+}
+WHERE {
+  ?s ex:header_identifier ?identifier .
+
+  # there is no URI available in the data, create one from the OAI identifier
+  # the OAI identifier contains a ":" which is an illegal URI character so remove the static part up to ":"
+  BIND( URI(CONCAT("https://www.archiefeemland.nl/bronnen/foto-s/",STRAFTER(?identifier,":"))) as ?uri)
+
+  
+  OPTIONAL { ?s ex:ese_description ?description }
+  OPTIONAL { ?s ex:ese_subject ?subject }
+  OPTIONAL { ?s ex:ese_title ?identifier }
+
+  # select the URL of the image, ignore other values
+  OPTIONAL { 
+    ?s ex:ese_references ?isShownAtStr
+    BIND( IF(CONTAINS(?isShownAtStr,"http"), URI(?isShownAtStr),BNODE() ) AS ?isShownAt )
+    FILTER( !ISBLANK( ?isShownAt ) )  
+  }
+
+  # select the URL of the page where the image is displayed, ignore other values
+  OPTIONAL { 
+    ?s ex:ese_isShownBy ?isShownByStr 
+    BIND( IF(CONTAINS(?isShownByStr,"http"), URI(?isShownByStr),BNODE() ) AS ?isShownBy )
+    BIND( BNODE() as ?image_uri )
+    FILTER( !ISBLANK( ?isShownBy ) )  
+  }
+
+  # fixed value for publisher
+  BIND( URI("https://www.archiefeemland.nl") as ?publisher )
+} 

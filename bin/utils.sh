@@ -36,7 +36,9 @@ createExactMatches () {
 }
 
 readconfig() {
-    VAR=`jq  ".[].$DATASET.$1" $CONFIG`
+    #VAR=`jq  ".[].$DATASET.$1" $CONFIG`
+    #--arg keyvar "$bash_var" 
+    VAR=`jq ".[]|select(has(\"$DATASET\"))|.[].$1" $CONFIG` 
     VAR=$(eval echo $VAR)
     echo $VAR
 }
