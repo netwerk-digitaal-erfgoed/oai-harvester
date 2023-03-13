@@ -17,7 +17,7 @@ then
 fi
 
 # harvest the dataset as configured in $CONFIG
-#npm run harvester -- --dataset=$DATASET
+npm run harvester -- --dataset=$DATASET
 
 # the source and destination file names are read from $CONFIG
 DESTFILE=$(readconfig resultFile)
@@ -39,7 +39,6 @@ sparql -q --results N-Triples\
  --query $BASEQUERY > $BASEFILE
 
 # loop through the defined refinements in $CONFIG
-#jq '.[]|select(has($DATASET))|.[].refinements|length' ./mappings/config.json
 NUMREFINEMENTS=`jq ".[]|select(has(\"$DATASET\"))|.[].refinements | length" $CONFIG`
 
 if (( $NUMREFINEMENTS > 0 ))
