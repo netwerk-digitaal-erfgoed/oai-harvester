@@ -13,9 +13,10 @@ This setup requires the JENA commandline tools (SPARQL tool) to be installed, No
 
 To run the pipeline:
 ``
-$ bin/harvester-and-transform.sh <dataset name>
+$ export DATASET=<dataset name>
+$ export CONFIG=mappings/config.json
+$ bin/harvester-and-transform.sh 
 ``
-
 
 The 'dataset name' must be defined in the ./mapping/config.json.
 
