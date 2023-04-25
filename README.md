@@ -1,15 +1,15 @@
 # oai-harvester
 
-Node bases OAI-PMH harverster with additional processing. 
+Node based OAI-PMH harverster with additional processing. 
 
-Basic node and bash script to perform the following actions:
+Basic Node and Bash script to perform the following actions:
 
-- harvest a dataset from a specified OAI endpoint (see mapping/config.json)
+- harvest a dataset from a specified OAI-PMH endpoint (see mapping/config.json)
 - automatic conversion to RDF (ntriples) using a simple one-to-one transformation (see mapping/dcn-mapping.json)
-- RDF to RDF semantic transformation using sparql construct queries (see bin/transform-rce-beeldbank.sh)
+- RDF to RDF semantic transformation using SPARQL construct queries (see bin/transform-rce-beeldbank.sh)
 - including automatic enrichment with exact matches from extern terminology sources
 
-This setup requires the JENA commandline tools (sparql tool) to be installed, Node.js and the jq tool.
+This setup requires the JENA commandline tools (SPARQL tool) to be installed, Node.js and the jq tool.
 
 To run the pipeline:
 ``
@@ -28,7 +28,7 @@ $ git clone https://github.com/netwerk-digitaal-erfgoed/oai-harvester.git
 $ docker compose build
 ```
 
-## configure
+## Configure
 
 Adjust the settings in the config.json file in the mappings directory. 
 
@@ -43,7 +43,3 @@ Start the harvest and conversion with the following command:
 ```
 $ docker-compose up
 ```
-
-
-
-
