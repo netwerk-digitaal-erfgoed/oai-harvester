@@ -12,11 +12,11 @@ Basic Node and Bash script to perform the following actions:
 This setup requires the JENA commandline tools (SPARQL tool) to be installed, Node.js and the jq tool.
 
 To run the pipeline:
-``
+```
 $ export DATASET=<dataset name>
 $ export CONFIG=mappings/config.json
 $ bin/harvester-and-transform.sh 
-``
+```
 
 The 'dataset name' must be defined in the ./mapping/config.json.
 
